@@ -41,10 +41,24 @@ git tag "v${VERSION}"
 git push origin main
 git push origin "v${VERSION}"
 
-# Print GitHub release URL
+# Build GitHub release URL
 REMOTE_URL=$(git remote get-url origin)
 # Convert git@github.com:owner/repo.git or https://github.com/owner/repo.git to owner/repo
 REPO=$(echo "${REMOTE_URL}" | sed -E 's#(git@github\.com:|https://github\.com/)##; s/\.git$//')
+RELEASE_URL="https://github.com/${REPO}/releases/new?tag=v${VERSION}&title=v${VERSION}&generate-notes=true"
+
 echo ""
-echo "Create release at:"
-echo "  https://github.com/${REPO}/releases/new?tag=v${VERSION}&title=v${VERSION}"
+echo "============================================"
+echo "  Released v${VERSION} successfully!"
+echo "============================================"
+echo ""
+echo "Create the GitHub release to trigger PyPI publish:"
+echo "  ${RELEASE_URL}"
+echo ""
+
+# Open in browser if possible
+if command -v xdg-open &>/dev/null; then
+    xdg-open "${RELEASE_URL}" 2>/dev/null || true
+elif command -v open &>/dev/null; then
+    open "${RELEASE_URL}" 2>/dev/null || true
+fi
